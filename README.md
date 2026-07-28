@@ -23,6 +23,8 @@
 
 # 🏗 Architecture
 
+![AWS Infrastructure Architecture](docs/architecture/aws-infrastructure-architecture.png)
+
 ---
 
 # 🛠 기술 스택
