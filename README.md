@@ -37,13 +37,13 @@
 
 | 구분 | 기술 |
 |---|---|
-| Cloud | AWS EC2, VPC, ALB, Auto Scaling, Route 53, S3, CodeDeploy |
+| Cloud | AWS EC2, VPC, ALB, Auto Scaling, Route 53, S3 |
 | IaC / Automation | Ansible |
 | CI/CD | Jenkins, AWS CodeDeploy |
 | Build | Maven |
 | Container | Docker, Docker Hub |
 | Application | Spring PetClinic |
-| Version Control | Git, GitHub |
+| Version Control | GitHub |
 
 ---
 
