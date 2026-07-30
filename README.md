@@ -35,6 +35,16 @@
 
 # 🛠 기술 스택
 
+| 구분 | 기술 |
+|---|---|
+| Cloud | AWS EC2, VPC, ALB, Auto Scaling, Route 53, S3, CodeDeploy |
+| IaC / Automation | Ansible |
+| CI/CD | Jenkins, AWS CodeDeploy |
+| Build | Maven |
+| Container | Docker, Docker Hub |
+| Application | Spring PetClinic |
+| Version Control | Git, GitHub |
+
 ---
 
 # ☁ AWS 인프라 구성
