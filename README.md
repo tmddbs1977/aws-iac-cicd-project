@@ -23,7 +23,13 @@
 
 # 🏗 Architecture
 
+## AWS Infrastructure Architecture
+
 ![AWS Infrastructure Architecture](docs/architecture/aws-infrastructure-architecture.png)
+
+## CI/CD Pipeline Architecture
+
+![CI/CD Pipeline Architecture](docs/architecture/cicd-pipeline-architecture.png)
 
 ---
 
