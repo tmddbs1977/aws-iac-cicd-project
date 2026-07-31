@@ -135,18 +135,18 @@ Route 53에서 Jenkins와 Application 도메인을 동일한 Application Load Ba
 
 | Role | 자동화 대상 |
 |---|---|
-| network | VPC, Subnet, IGW, NAT Gateway, Route Table |
-| security | Security Group |
-| iam | IAM Role, Instance Profile |
-| jenkins | Jenkins EC2 |
-| app_origin | App Origin EC2 생성, 환경 구성, AMI 생성 |
-| asg | Launch Template, Auto Scaling Group |
-| loadbalancer | ALB, Target Group, Listener Rule |
-| s3 | CodeDeploy 배포 패키지용 S3 Bucket |
-| codedeploy | CodeDeploy Application |
+| [network](ansible/roles/network/tasks/main.yml) | VPC, Subnet, IGW, NAT Gateway, Route Table |
+| [security](ansible/roles/security/tasks/main.yml) | Security Group |
+| [iam](ansible/roles/iam/tasks/main.yml) | IAM Role, Instance Profile |
+| [jenkins](ansible/roles/jenkins/tasks/main.yml) | Jenkins EC2 |
+| [app_origin](ansible/roles/app_origin/tasks/main.yml) | App Origin EC2 생성, 환경 구성, AMI 생성 |
+| [asg](ansible/roles/asg/tasks/main.yml) | Launch Template, Auto Scaling Group |
+| [loadbalancer](ansible/roles/loadbalancer/tasks/main.yml) | ALB, Target Group, Listener Rule |
+| [s3](ansible/roles/s3/tasks/main.yml) | CodeDeploy 배포 패키지용 S3 Bucket |
+| [codedeploy](ansible/roles/codedeploy/tasks/main.yml) | CodeDeploy Application |
 
 AWS 인프라의 반복적인 구축 작업을 자동화하기 위해 Ansible Role과 Playbook을 구성했습니다.
-각 리소스를 역할별로 분리하여 필요한 인프라를 개별적으로 생성 및 삭제할 수 있도록 구성했습니다.
+각 리소스를 역할별로 분리하여 필요한 인프라를 개별적으로 생성 및 삭제할 수 있도록 구현했습니다.
 
 ---
 
