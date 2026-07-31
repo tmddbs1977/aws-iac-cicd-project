@@ -116,6 +116,21 @@ Application Load Balancer를 두 Public Subnet에 배치하고 Host Header 기�
 `user02-jenkins.busanit.com` 요청은 Jenkins Target Group으로,
 `user02-app.busanit.com` 요청은 Auto Scaling Group과 연결된 App Target Group으로 전달되도록 구성했습니다.
 
+## Route 53
+
+| 구분 | 구성 |
+|---|---|
+| Hosted Zone | busanit.com |
+| Jenkins | user02-jenkins.busanit.com → ALB |
+| Application | user02-app.busanit.com → ALB |
+| Record Type | A (Alias) |
+
+Route 53에서 Jenkins와 Application 도메인을 동일한 Application Load Balancer로 연결하였습니다.
+
+두 도메인의 요청은 ALB로 전달되며, ALB의 Host Header 기반 라우팅 규칙에 따라 Jenkins Target Group과 App Target Group으로 각각 전달되도록 구성했습니다.
+
+> Route 53 레코드는 Ansible 자동화 대상에 포함하지 않고 AWS Management Console에서 직접 구성했습니다.
+
 ---
 
 # 🤖 IaC (Ansible)
