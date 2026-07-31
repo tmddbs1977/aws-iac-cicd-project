@@ -4,6 +4,7 @@ az_a: "ap-northeast-2a"
 az_c: "ap-northeast-2c"
 prefix: "user02"
 key_name: "user02-key"
+aws_account_id: "<YOUR_AWS_ACCOUNT_ID>"
 
 # 2. 네트워크 (VPC & Subnet) 설정
 vpc_cidr: "172.42.0.0/16"
