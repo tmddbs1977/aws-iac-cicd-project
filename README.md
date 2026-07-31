@@ -69,7 +69,7 @@ Public Subnet은 Internet Gateway를 통해 외부와 통신하도록 구성했�
 
 Jenkins 및 WAS 인스턴스를 Private Subnet에 배치하여 외부에 직접 노출하지 않고, NAT Gateway를 통해 필요한 아웃바운드 인터넷 통신이 가능하도록 구성했습니다.
 
-### Compute
+## EC2
 
 | 구분 | 구성 |
 |---|---|
@@ -87,7 +87,7 @@ Jenkins 서버는 Private Subnet A에 고정 사설 IP로 배치하고 Public IP
 WAS는 Docker와 CodeDeploy Agent가 설치된 App Origin 인스턴스로부터 AMI를 생성한 뒤,
 해당 AMI를 Launch Template에 적용하여 Auto Scaling Group이 Private Subnet A/C에 인스턴스를 생성하도록 구성했습니다.
 
-### Security Group
+## Security Group
 
 | 구분 | 허용 포트 | Source |
 |---|---|---|
