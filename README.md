@@ -49,6 +49,27 @@
 
 # ☁ AWS 인프라 구성
 
+## Network
+
+| 구분 | 구성 |
+|---|---|
+| Region | ap-northeast-2 (Seoul) |
+| VPC | 172.42.0.0/16 |
+| Availability Zones | ap-northeast-2a, ap-northeast-2c |
+| Public Subnet A | 172.42.0.0/24 |
+| Public Subnet C | 172.42.16.0/24 |
+| Private Subnet A | 172.42.64.0/24 |
+| Private Subnet C | 172.42.80.0/24 |
+| Public Route | 0.0.0.0/0 → Internet Gateway |
+| Private Route | 0.0.0.0/0 → NAT Gateway |
+| NAT Gateway | Public Subnet A에 단일 구성 |
+
+2개의 Availability Zone에 Public/Private Subnet을 분산 구성하였으며,
+Public Subnet은 Internet Gateway를 통해 외부와 통신하도록 구성했습니다.
+
+Private Subnet은 NAT Gateway를 통해 아웃바운드 인터넷 통신이 가능하도록 구성하여,
+Jenkins 및 WAS 인스턴스를 외부에 직접 노출하지 않도록 설계했습니다.
+
 ---
 
 # 🤖 IaC (Ansible)
