@@ -1,0 +1,32 @@
+# 1. 공통 환경 설정
+region: "ap-northeast-2"
+az_a: "ap-northeast-2a"
+az_c: "ap-northeast-2c"
+prefix: "user02"
+key_name: "user02-key"
+
+# 2. 네트워크 (VPC & Subnet) 설정
+vpc_cidr: "172.42.0.0/16"
+
+# 리스트 형태로 관리하여 반복문(loop) 처리가 용이하도록 구성
+pub_subnets:
+  - { cidr: "172.42.0.0/24", az: "ap-northeast-2a", name: "pub-a" }
+  - { cidr: "172.42.16.0/24", az: "ap-northeast-2c", name: "pub-c" }
+
+pri_subnets:
+  - { cidr: "172.42.64.0/24", az: "ap-northeast-2a", name: "pri-a" }
+  - { cidr: "172.42.80.0/24", az: "ap-northeast-2c", name: "pri-c" }
+
+# 3. 인스턴스 사양
+ami_id: "ami-084a56dceed3eb9bb" # Ubuntu 24.04 LTS (Seoul 리전 기준)
+instance_type: "t3.medium"
+jenkins_fixed_ip: "172.42.64.100"
+jenkins_volume_size: 25
+
+# 4. 도메인 및 경로
+domain_name: "busanit.com"
+jenkins_domain: "user02-jenkins.busanit.com"
+app_domain: "user02-app.busanit.com"
+
+# 5. Git 및 스크립트 정보
+jenkins_git_repo: "https://github.com/tmddbs1977/Jenkins.git"
