@@ -67,8 +67,33 @@
 2개의 Availability Zone에 Public/Private Subnet을 분산 구성하였으며,
 Public Subnet은 Internet Gateway를 통해 외부와 통신하도록 구성했습니다.
 
-Private Subnet은 NAT Gateway를 통해 아웃바운드 인터넷 통신이 가능하도록 구성하여,
-Jenkins 및 WAS 인스턴스를 외부에 직접 노출하지 않도록 설계했습니다.
+Jenkins 및 WAS 인스턴스를 Private Subnet에 배치하여 외부에 직접 노출하지 않고, NAT Gateway를 통해 필요한 아웃바운드 인터넷 통신이 가능하도록 구성했습니다.
+
+### Compute
+
+| 구분 | 구성 |
+|---|---|
+| Jenkins | Private Subnet A, 172.42.64.100 |
+| App Origin | Public Subnet A에서 임시 생성 후 AMI 생성 및 종료 |
+| WAS | Private Subnet A/C, Auto Scaling Group으로 관리 |
+| Instance Type | t3.medium |
+| OS | Ubuntu 24.04 LTS |
+| Launch Template | App Origin 기반 AMI 사용 |
+| Auto Scaling | Min 1 / Desired 2 / Max 3 |
+| Health Check | ELB |
+
+Jenkins 서버는 Private Subnet A에 고정 사설 IP로 배치하고 Public IP를 할당하지 않았습니다.
+
+WAS는 Docker와 CodeDeploy Agent가 설치된 App Origin 인스턴스로부터 AMI를 생성한 뒤,
+해당 AMI를 Launch Template에 적용하여 Auto Scaling Group이 Private Subnet A/C에 인스턴스를 생성하도록 구성했습니다.
+
+### Security Group
+
+| 구분 | 허용 포트 | Source |
+|---|---|---|
+| SSH SG | TCP 22 | 0.0.0.0/0 |
+| Web SG | TCP 80, 443 | 0.0.0.0/0 |
+| SSM Endpoint SG | TCP 443 | 172.42.0.0/16 |
 
 ---
 
