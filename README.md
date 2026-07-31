@@ -95,6 +95,27 @@ WAS는 Docker와 CodeDeploy Agent가 설치된 App Origin 인스턴스로부터 
 | Web SG | TCP 80, 443 | 0.0.0.0/0 |
 | SSM Endpoint SG | TCP 443 | 172.42.0.0/16 |
 
+※ 실습 환경에서는 SSH 접근을 위해 22번 포트를 전체 대역에 허용했으며, 운영 환경에서는 관리자 IP 대역으로 제한하는 것이 적절합니다.
+
+### ALB / Target Group
+
+| 구분 | 구성 |
+|---|---|
+| ALB | Public Subnet A/C에 배치 |
+| Listener | HTTP 80 |
+| Jenkins Target Group | IP 방식, 172.42.64.100:80 |
+| Jenkins Health Check | HTTP `/login` |
+| App Target Group | Instance 방식, Port 80 |
+| App Health Check | HTTP `/` |
+| Routing | Host Header 기반 분기 |
+| Jenkins Domain | user02-jenkins.busanit.com |
+| App Domain | user02-app.busanit.com |
+
+Application Load Balancer를 두 Public Subnet에 배치하고 Host Header 기반 라우팅을 구성했습니다.
+
+`user02-jenkins.busanit.com` 요청은 Jenkins Target Group으로,
+`user02-app.busanit.com` 요청은 Auto Scaling Group과 연결된 App Target Group으로 전달되도록 구성했습니다.
+
 ---
 
 # 🤖 IaC (Ansible)
