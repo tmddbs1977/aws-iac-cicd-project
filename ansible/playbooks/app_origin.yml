@@ -1,0 +1,19 @@
+---
+- name: App Origin EC2 Management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/main.yml
+
+  tasks:
+    - name: Deploy App Origin EC2
+      include_role:
+        name: app_origin
+      when: action == "deploy"
+
+    - name: Terminate App Origin EC2
+      include_role:
+        name: app_origin
+        tasks_from: terminate
+      when: action == "terminate"
