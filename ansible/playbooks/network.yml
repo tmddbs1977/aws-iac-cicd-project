@@ -1,0 +1,19 @@
+---
+- name: Network Infrastructure Management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/main.yml
+
+  tasks:
+    - name: Deploy Network
+      include_role:
+        name: network
+      when: action == "deploy"
+
+    - name: Terminate Network
+      include_role:
+        name: network
+        tasks_from: terminate
+      when: action == "terminate"
