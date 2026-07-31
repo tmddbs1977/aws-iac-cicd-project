@@ -134,6 +134,7 @@ Route 53에서 Jenkins와 Application 도메인을 동일한 Application Load Ba
 # 🤖 IaC (Ansible)
 
 AWS 인프라의 반복적인 구축 작업을 자동화하기 위해 Ansible Role과 Playbook을 구성했습니다.
+
 각 리소스를 역할별로 분리하여 필요한 인프라를 개별적으로 생성 및 삭제할 수 있도록 구현했습니다.
 
 | Role | 자동화 대상 |
