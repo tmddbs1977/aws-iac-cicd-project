@@ -1,0 +1,19 @@
+---
+- name: S3 Management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/main.yml
+
+  tasks:
+    - name: Deploy S3
+      include_role:
+        name: s3
+      when: action == "deploy"
+
+    - name: Terminate S3
+      include_role:
+        name: s3
+        tasks_from: terminate
+      when: action == "terminate"
