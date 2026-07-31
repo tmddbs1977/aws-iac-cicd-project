@@ -48,7 +48,7 @@
           {
             "Effect": "Allow",
             "Action": "iam:PassRole",
-            "Resource": "arn:aws:iam::491085389788:role/{{ prefix }}-codedeploy-service-role"
+            "Resource": "arn:aws:iam::{{ aws_account_id }}:role/{{ prefix }}-codedeploy-service-role"
           }
         ]
       }
