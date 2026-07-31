@@ -1,0 +1,19 @@
+---
+- name: Jenkins EC2 Management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/main.yml
+
+  tasks:
+    - name: Deploy Jenkins EC2
+      include_role:
+        name: jenkins
+      when: action == "deploy"
+
+    - name: Terminate Jenkins EC2
+      include_role:
+        name: jenkins
+        tasks_from: terminate
+      when: action == "terminate"
