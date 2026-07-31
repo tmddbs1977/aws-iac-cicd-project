@@ -1,0 +1,19 @@
+---
+- name: IAM Role & Policy Management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/main.yml
+
+  tasks:
+    - name: Deploy IAM Resources
+      include_role:
+        name: iam
+      when: action == "deploy"
+
+    - name: Terminate IAM Resources
+      include_role:
+        name: iam
+        tasks_from: terminate
+      when: action == "terminate"
