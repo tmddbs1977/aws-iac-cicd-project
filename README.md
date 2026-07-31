@@ -104,7 +104,9 @@ WAS는 Docker와 CodeDeploy Agent가 설치된 App Origin 인스턴스로부터 
 | ALB | Public Subnet A/C에 배치 |
 | Listener | HTTP 80 |
 | Jenkins Target Group | IP 방식, 172.42.64.100:80 |
+| Jenkins Health Check | HTTP `/login` |
 | App Target Group | Instance 방식, Port 80 |
+| App Health Check | HTTP `/` |
 | Routing | Host Header 기반 분기 |
 | Jenkins Domain | user02-jenkins.busanit.com |
 | App Domain | user02-app.busanit.com |
