@@ -4,7 +4,7 @@
   connection: local
   gather_facts: false
   vars_files:
-    - group_vars/main.yml
+    - ../group_vars/all.yml
 
   tasks:
     - name: Deploy Security Groups
