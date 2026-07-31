@@ -1,0 +1,19 @@
+---
+- name: Security Group Management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/main.yml
+
+  tasks:
+    - name: Deploy Security Groups
+      include_role:
+        name: security
+      when: action == "deploy"
+
+    - name: Terminate Security Groups
+      include_role:
+        name: security
+        tasks_from: terminate
+      when: action == "terminate"
