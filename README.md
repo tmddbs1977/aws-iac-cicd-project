@@ -129,11 +129,24 @@ Route 53에서 Jenkins와 Application 도메인을 동일한 Application Load Ba
 
 두 도메인의 요청은 ALB로 전달되며, ALB의 Host Header 기반 라우팅 규칙에 따라 Jenkins Target Group과 App Target Group으로 각각 전달되도록 구성했습니다.
 
-> Route 53 레코드는 Ansible 자동화 대상에 포함하지 않고 AWS Management Console에서 직접 구성했습니다.
-
 ---
 
 # 🤖 IaC (Ansible)
+
+| Role | 자동화 대상 |
+|---|---|
+| network | VPC, Subnet, IGW, NAT Gateway, Route Table |
+| security | Security Group |
+| iam | IAM Role, Instance Profile |
+| jenkins | Jenkins EC2 |
+| app_origin | App Origin EC2 생성, 환경 구성, AMI 생성 |
+| asg | Launch Template, Auto Scaling Group |
+| loadbalancer | ALB, Target Group, Listener Rule |
+| s3 | CodeDeploy 배포 패키지용 S3 Bucket |
+| codedeploy | CodeDeploy Application |
+
+AWS 인프라의 반복적인 구축 작업을 자동화하기 위해 Ansible Role과 Playbook을 구성했습니다.
+각 리소스를 역할별로 분리하여 필요한 인프라를 개별적으로 생성 및 삭제할 수 있도록 구성했습니다.
 
 ---
 
