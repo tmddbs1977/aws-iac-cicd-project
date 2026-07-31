@@ -1,0 +1,25 @@
+---
+- name: Launch Template & ASG Management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/main.yml
+
+  tasks:
+    # 보안 그룹 정보를 미리 조회해야 LT 생성 시 ID 사용 가능
+    - name: Get SG Info for LT
+      amazon.aws.ec2_security_group_info:
+        region: "{{ region }}"
+      register: sg_info
+
+    - name: Deploy ASG Resources
+      include_role:
+        name: asg
+      when: action == "deploy"
+
+    - name: Terminate ASG Resources
+      include_role:
+        name: asg
+        tasks_from: terminate
+      when: action == "terminate"
