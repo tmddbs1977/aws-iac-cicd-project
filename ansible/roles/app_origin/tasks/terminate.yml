@@ -1,0 +1,28 @@
+# 1. 생성된 AMI 정보 조회 (이름 기반)
+- name: Get AMI information
+  amazon.aws.ec2_ami_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Name": "{{ prefix }}-app-image"
+  register: ami_info
+
+# 2. AMI 등록 해제 (Deregister)
+- name: Deregister AMI
+  amazon.aws.ec2_ami:
+    region: "{{ region }}"
+    image_id: "{{ item.image_id }}"
+    state: absent
+  loop: "{{ ami_info.images }}"
+  register: deregister_result
+
+# 3. AMI와 연결되어 있던 스냅샷 삭제
+# AMI를 먼저 삭제해야 스냅샷 삭제 권한이 생깁니다.
+- name: Remove associated Snapshots
+  amazon.aws.ec2_snapshot:
+    region: "{{ region }}"
+    snapshot_id: "{{ item.1.ebs.snapshot_id }}"
+    state: absent
+  loop: "{{ ami_info.images | subelements('block_device_mappings') }}"
+  when:
+    - item.1.ebs is defined
+    - item.1.ebs.snapshot_id is defined

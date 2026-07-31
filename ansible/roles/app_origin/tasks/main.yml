@@ -1,0 +1,97 @@
+# 1. VPC 및 서브넷 정보 조회 (Public Subnet A에 생성)
+- name: Get Subnet ID
+  amazon.aws.ec2_vpc_subnet_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Name": "{{ prefix }}-pub-a"
+  register: subnet_info
+
+# 2. 보안 그룹 ID 조회
+- name: Get Security Group IDs
+  amazon.aws.ec2_security_group_info:
+    region: "{{ region }}"
+    filters:
+      group-name: 
+        - "{{ prefix }}-ssh-sg"
+        - "{{ prefix }}-web-sg"
+  register: sg_info
+
+# 3. 원본 EC2 인스턴스 생성
+- name: Launch App Origin EC2
+  amazon.aws.ec2_instance:
+    name: "{{ prefix }}-app-origin"
+    region: "{{ region }}"
+    image_id: "{{ ami_id }}"      # Ubuntu 24.04
+    instance_type: "{{ instance_type }}"
+    key_name: "{{ key_name }}"
+    vpc_subnet_id: "{{ subnet_info.subnets[0].id }}"
+    security_groups: "{{ sg_info.security_groups | map(attribute='group_id') | list }}"
+    iam_instance_profile: "{{ prefix }}-app-instance-profile"
+    network:
+      assign_public_ip: yes
+    # Docker 및 CodeDeploy Agent 자동 설치 스크립트
+    user_data: |
+      #!/bin/bash
+      apt-get update -y
+      apt-get install -y docker.io ruby-full wget
+
+      # Docker 서비스 활성화 및 권한 설정
+      systemctl start docker
+      systemctl enable docker
+      usermod -aG docker ubuntu
+      
+      # Docker Compose V2 설치
+      mkdir -p /usr/local/lib/docker/cli-plugins
+      curl -SL https://github.com/docker/compose/releases/download/v2.26.1/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+      chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+      # CodeDeploy Agent 설치
+      cd /home/ubuntu
+      wget https://aws-codedeploy-{{ region }}.s3.{{ region }}.amazonaws.com/latest/install
+      chmod +x ./install
+      ./install auto
+      systemctl enable codedeploy-agent
+      systemctl start codedeploy-agent
+    tags:
+      Name: "{{ prefix }}-app-origin"
+      Role: "Origin"
+  register: ec2_origin
+
+# 4-1. AMI 생성을 위해 인스턴스 부팅 대기
+- name: Wait for instance to be ready
+  amazon.aws.ec2_instance_info:
+    instance_ids: "{{ ec2_origin.instance_ids }}"
+    region: "{{ region }}"
+  register: wait_ec2
+  until: wait_ec2.instances[0].state.name == 'running'
+  retries: 10
+  delay: 20
+
+# 4-2. 내부 스크립트(Docker, CodeDeploy) 설치 완료 대기 (OS 레벨)
+- name: Wait for user_data installation script to finish
+  ansible.builtin.pause:
+    minutes: 2
+
+# 5. 실행 중인 인스턴스로부터 AMI 생성
+- name: Create AMI from App Origin Instance
+  amazon.aws.ec2_ami:
+    instance_id: "{{ ec2_origin.instance_ids[0] }}"
+    name: "{{ prefix }}-app-image"
+    region: "{{ region }}"
+    wait: yes # 이미지 생성이 완료될 때까지 대기
+    tags:
+      Name: "{{ prefix }}-app-image"
+  register: created_ami
+
+# 6. 생성된 AMI ID를 전역에서 사용할 수 있도록 출력 또는 변수 저장
+- name: Display Created AMI ID
+  debug:
+    msg: "New AMI ID is {{ created_ami.image_id }}"
+
+# 7. 원본 EC2 인스턴스 종료
+- name: Terminate App Origin EC2
+  amazon.aws.ec2_instance:
+    region: "{{ region }}"
+    instance_ids: "{{ ec2_origin.instance_ids }}"
+    state: absent
+    wait: yes

@@ -1,0 +1,7 @@
+- name: Delete CodeDeploy Application
+  ansible.builtin.shell: |
+    aws deploy delete-application --application-name {{ prefix }}-code-deploy
+  register: app_delete
+  failed_when:
+    - app_delete.rc != 0
+    - "'ApplicationDoesNotExistException' not in app_delete.stderr" # 이미 없어도 무시

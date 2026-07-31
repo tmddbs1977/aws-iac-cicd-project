@@ -1,0 +1,53 @@
+# 1. 서브넷 ID 조회 (172.42.64.0/24 대역인 pri-a 조회)
+- name: Get Jenkins Subnet ID
+  amazon.aws.ec2_vpc_subnet_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Name": "{{ prefix }}-pri-a"
+  register: jenkins_subnet
+
+# 2. 보안 그룹 ID 조회
+- name: Get SG IDs for Jenkins
+  amazon.aws.ec2_security_group_info:
+    region: "{{ region }}"
+    filters:
+      group-name: 
+        - "{{ prefix }}-ssh-sg"
+        - "{{ prefix }}-web-sg"
+  register: sg_info
+
+# 3. Jenkins EC2 생성 (고정 IP 및 User Data 적용)
+- name: Launch Jenkins EC2
+  amazon.aws.ec2_instance:
+    name: "{{ prefix }}-jenkins"
+    region: "{{ region }}"
+    image_id: "{{ ami_id }}"
+    instance_type: "{{ instance_type }}"
+    key_name: "{{ key_name }}"
+    vpc_subnet_id: "{{ jenkins_subnet.subnets[0].id }}"
+    network_interfaces:
+      - device_index: 0
+        private_ip_address: "{{ jenkins_fixed_ip }}"
+        groups: "{{ sg_info.security_groups | map(attribute='group_id') | list }}"
+        assign_public_ip: false
+    iam_instance_profile: "{{ prefix }}-app-instance-profile"
+    # 요구사항: Jenkins 배포 스크립트 실행
+    user_data: |
+      #!/bin/bash
+      apt-get update -y
+      
+      # Jenkins 레포지토리 클론 및 실행
+      cd /home/ubuntu
+      git clone {{ jenkins_git_repo }}
+      cd Jenkins
+      chmod u+x docker-install.sh
+      ./docker-install.sh
+      docker compose up -d
+    volumes:
+      - device_name: /dev/sda1
+        ebs:
+          volume_size: "{{ jenkins_volume_size }}"
+          volume_type: gp3
+          delete_on_termination: true
+    tags:
+      Name: "{{ prefix }}-jenkins"

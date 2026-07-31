@@ -1,0 +1,7 @@
+---
+# 1. S3 삭제
+- name: Delete S3
+  amazon.aws.s3_bucket:
+    name: "{{ prefix }}-codedeploy-bucket"
+    region: "{{ region }}"
+    state: absent

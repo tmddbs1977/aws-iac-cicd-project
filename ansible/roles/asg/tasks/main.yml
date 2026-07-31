@@ -1,0 +1,57 @@
+# 1. Private 서브넷 ID 리스트 조회
+- name: Get Private Subnet IDs
+  amazon.aws.ec2_vpc_subnet_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Name": "{{ prefix }}-pri-*"
+  register: pri_subnets_info
+
+# 2. AMI ID 조회 (app_origin에서 생성한 AMI)
+- name: Get the latest APP AMI ID
+  amazon.aws.ec2_ami_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Name" : "{{ prefix }}-app-image"
+      state: available
+  register: found_ami
+
+- name: Set AMI ID fact
+  set_fact:
+    target_ami_id: "{{ (found_ami.images | sort(attribute='creation_date') | last).image_id }}"
+  failed_when: found_ami.images | length == 0
+
+# 3. 시작 템플릿 생성 (S3 접근 권한 프로파일 포함)
+- name: Create Launch Template
+  amazon.aws.ec2_launch_template:
+    name: "{{ prefix }}-app-lt"
+    region: "{{ region }}"
+    image_id: "{{ target_ami_id }}" # 추출된 APP Image ID 사용
+    instance_type: "{{ instance_type }}"
+    key_name: "{{ key_name }}"
+    iam_instance_profile: "{{ prefix }}-app-instance-profile" # S3/SSM 권한 포함
+    network_interfaces:
+      - device_index: 0
+        groups: 
+          - "{{ (sg_info.security_groups | selectattr('group_name', 'equalto', prefix + '-ssh-sg') | first).group_id }}"
+          - "{{ (sg_info.security_groups | selectattr('group_name', 'equalto', prefix + '-web-sg') | first).group_id }}"
+    tags:
+      Name: "{{ prefix }}-app-lt"
+  register: app_lt
+
+# 4. 오토스케일링 그룹 생성 (Private 서브넷 배치)
+- name: Create Auto Scaling Group
+  amazon.aws.autoscaling_group:
+    name: "{{ prefix }}-app-asg"
+    region: "{{ region }}"
+    launch_template:
+      launch_template_name: "{{ prefix }}-app-lt"
+      version: "$Latest"
+    vpc_zone_identifier: "{{ pri_subnets_info.subnets | map(attribute='id') | list }}"
+    min_size: 1
+    max_size: 3
+    desired_capacity: 2
+    health_check_type: ELB
+    health_check_period: 300
+    tags:
+      - Name: "{{ prefix }}-asg-instance"
+        propagate_at_launch: true

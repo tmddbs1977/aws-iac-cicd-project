@@ -1,0 +1,13 @@
+# 1. Jenkins에서 scripts 업로드용 S3생성
+---
+- name: Create S3 Bucket for Deployment
+  amazon.aws.s3_bucket:
+    name: "{{ prefix }}-codedeploy-bucket"
+    region: "{{ region }}"
+    state: present
+    public_access:  # 보안을 위해 퍼블릭 액세스는 차단하는 것이 정석입니다.
+      block_public_acls: true
+      block_public_policy: true
+      ignore_public_acls: true
+      restrict_public_buckets: true
+  register: s3_info

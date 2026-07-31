@@ -1,0 +1,64 @@
+# 1. VPC ID 조회 (이름 기준)
+- name: Get VPC ID
+  amazon.aws.ec2_vpc_net_info:
+    region: "{{ region }}"
+    filters:
+      "tag:Name": "{{ prefix }}-vpc"
+  register: vpc_info
+
+- name: Set VPC ID Fact
+  set_fact:
+    target_vpc_id: "{{ vpc_info.vpcs[0].id }}"
+  when: vpc_info.vpcs | length > 0
+
+# 2. SSH 접속용 보안 그룹 (22번 포트)
+- name: Create SSH Security Group
+  amazon.aws.ec2_security_group:
+    name: "{{ prefix }}-ssh-sg"
+    description: "Allow SSH inbound traffic"
+    vpc_id: "{{ target_vpc_id }}"
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0  # 실제 운영 시 특정 IP로 제한
+    tags:
+      Name: "{{ prefix }}-ssh-sg"
+  register: ssh_sg
+
+# 3. HTTP/HTTPS 접속용 보안 그룹 (80, 443번 포트)
+- name: Create Web Security Group
+  amazon.aws.ec2_security_group:
+    name: "{{ prefix }}-web-sg"
+    description: "Allow HTTP and HTTPS inbound traffic"
+    vpc_id: "{{ target_vpc_id }}"
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+    tags:
+      Name: "{{ prefix }}-web-sg"
+  register: web_sg
+
+# 4. SSM Endpoint용 보안 그룹 (VPC 내부 443 허용)
+- name: Create SSM Endpoint Security Group
+  amazon.aws.ec2_security_group:
+    name: "{{ prefix }}-ssm-sg"
+    description: "Allow internal HTTPS for SSM endpoints"
+    vpc_id: "{{ target_vpc_id }}"
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: "{{ vpc_cidr }}" # VPC 내부 대역에서만 접근 허용
+    tags:
+      Name: "{{ prefix }}-ssm-sg"
+  register: ssm_sg

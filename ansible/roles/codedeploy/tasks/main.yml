@@ -1,0 +1,8 @@
+# 1. CodeDeploy 애플리케이션 생성
+- name: Create CodeDeploy Application
+  ansible.builtin.shell: |
+    aws deploy create-application --application-name {{ prefix }}-code-deploy --compute-platform Server
+  register: app_create
+  failed_when: 
+    - app_create.rc != 0 
+    - "'AlreadyExistsException' not in app_create.stderr" # 이미 있으면 무시

@@ -1,0 +1,22 @@
+# 1. EC2 인스턴스 프로파일 삭제
+- name: Remove EC2 Instance Profile
+  amazon.aws.iam_instance_profile:
+    name: "{{ prefix }}-app-instance-profile"
+    state: absent
+    region: "{{ region }}"
+
+# 2. CodeDeploy 서비스 역할 삭제
+- name: Remove CodeDeploy Service Role
+  amazon.aws.iam_role:
+    name: "{{ prefix }}-codedeploy-service-role"
+    state: absent
+    region: "{{ region }}"
+    purge_policies: yes  # 연결된 모든 정책을 확실히 떼어내고 삭제
+
+# 3. APP EC2 역할 삭제
+- name: Remove APP EC2 Role
+  amazon.aws.iam_role:
+    name: "{{ prefix }}-app-ec2-role"
+    state: absent
+    region: "{{ region }}"
+    purge_policies: yes  # 연결된 모든 정책을 확실히 떼어내고 삭제

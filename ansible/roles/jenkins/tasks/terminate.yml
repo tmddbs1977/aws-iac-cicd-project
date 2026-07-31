@@ -1,0 +1,8 @@
+# 1. Jenkins EC2 인스턴스 종료
+- name: Terminate Jenkins EC2
+  amazon.aws.ec2_instance:
+    region: "{{ region }}"
+    filters:
+      "tag:Name": "{{ prefix }}-jenkins"
+    state: absent
+    wait: yes

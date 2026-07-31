@@ -1,0 +1,73 @@
+# 1-1. EC2용 Trust Policy (EC2 서비스가 역할을 맡을 수 있도록 허용)
+- name: Create EC2 Trust Policy
+  set_fact:
+    ec2_trust_policy:
+      Version: '2012-10-17'
+      Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+
+# 1-2. CodeDeploy용 Trust Policy (CodeDeploy 서비스가 역할을 맡도록 허용)
+- name: Create CodeDeploy Trust Policy Fact
+  set_fact:
+    codedeploy_trust_policy:
+      Version: '2012-10-17'
+      Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: codedeploy.amazonaws.com
+
+# 2-1. APP EC2용 역할 생성 (S3 접근 + SSM 권한)
+- name: Create IAM Role for APP EC2
+  amazon.aws.iam_role:
+    name: "{{ prefix }}-app-ec2-role"
+    assume_role_policy_document: "{{ ec2_trust_policy | to_json }}"
+    managed_policies:
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess           # S3 접근 권한
+      - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore  # SSM 접속 권한
+      - arn:aws:iam::aws:policy/AWSCodeDeployFullAccess  # Code Deploy 권한
+    region: "{{ region }}"
+    tags:
+      Name: "{{ prefix }}-app-role"
+  register: app_role
+
+# 2-2. EC2용 역할에 PassRole 권한 추가
+- name: Add PassRole policy to EC2 Role
+  amazon.aws.iam_policy:
+    iam_type: role
+    iam_name: "{{ prefix }}-app-ec2-role"
+    policy_name: "JenkinsPassRolePolicy"
+    state: present
+    policy_json: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": "arn:aws:iam::491085389788:role/{{ prefix }}-codedeploy-service-role"
+          }
+        ]
+      }
+    region: "{{ region }}"
+
+# 3. CodeDeploy 서비스용 역할 생성
+- name: Create IAM Role for CodeDeploy Service
+  amazon.aws.iam_role:
+    name: "{{ prefix }}-codedeploy-service-role"
+    assume_role_policy_document: "{{ codedeploy_trust_policy | to_json }}"
+    managed_policies:
+      - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole # CodeDeploy 표준 권한
+    region: "{{ region }}"
+    tags:
+      Name: "{{ prefix }}-cd-role"
+
+# 4. EC2 인스턴스 프로파일 생성 (EC2에 역할을 할당하기 위해 필요)
+- name: Create EC2 Instance Profile
+  amazon.aws.iam_instance_profile:
+    name: "{{ prefix }}-app-instance-profile"
+    role: "{{ prefix }}-app-ec2-role"
+    region: "{{ region }}"

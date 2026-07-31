@@ -1,0 +1,14 @@
+# 1. 오토스케일링 그룹 삭제
+- name: Remove Auto Scaling Group
+  amazon.aws.autoscaling_group:
+    name: "{{ prefix }}-app-asg"
+    region: "{{ region }}"
+    state: absent
+    wait_for_instances: yes
+
+# 2. 시작 템플릿 삭제
+- name: Remove Launch Template
+  amazon.aws.ec2_launch_template:
+    name: "{{ prefix }}-app-lt"
+    region: "{{ region }}"
+    state: absent

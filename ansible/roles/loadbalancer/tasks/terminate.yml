@@ -1,0 +1,21 @@
+---
+# 1. ALB 삭제 (리스너와 규칙은 ALB가 삭제될 때 자동으로 함께 삭제됩니다)
+- name: Delete Application Load Balancer
+  elb_application_lb:
+    name: "{{ prefix }}-alb"
+    region: "{{ region }}"
+    state: absent
+    wait: yes
+
+# 2. 대상 그룹 삭제 (대상 그룹은 ALB와 별개이므로 명시적으로 지워야 합니다)
+- name: Delete App Target Group
+  elb_target_group:
+    name: "{{ prefix }}-app-tg"
+    region: "{{ region }}"
+    state: absent
+
+- name: Delete Jenkins Target Group
+  elb_target_group:
+    name: "{{ prefix }}-jenkins-tg"
+    region: "{{ region }}"
+    state: absent
