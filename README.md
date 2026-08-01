@@ -165,6 +165,18 @@ GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으�
 | Deployment Package  | Amazon S3         |
 | Deploy   | AWS CodeDeploy    |
 
+### Pipeline Flow
+
+1. GitHub Repository 변경 사항 Push
+2. Jenkins Pipeline 실행
+3. Maven을 이용한 애플리케이션 빌드
+4. Docker 이미지 생성 및 Docker Hub Push
+5. 배포 패키지 생성 후 Amazon S3 업로드
+6. AWS CodeDeploy를 통한 Auto Scaling Group 배포
+7. EC2 인스턴스에서 최신 Docker 이미지 Pull 및 컨테이너 실행
+
+- [Jenkinsfile 보기](jenkins/Jenkinsfile)
+
 ---
 
 # 📂 프로젝트 구조
