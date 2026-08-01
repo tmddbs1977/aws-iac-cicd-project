@@ -1,0 +1,27 @@
+version: 0.0
+os: linux
+# 다운로드 받은 파일을
+# 작업 디렉터리로 복사
+files:
+  - source: /
+    destination: /home/ubuntu
+    overwrite: yes
+file_exists_behavior: OVERWRITE
+
+# 실행 디렉터리 권한 설정
+permissions:
+  - object: /home/ubuntu
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  ApplicationStop:
+    - location: scripts/kill_process.sh
+      timeout: 100
+      runas: ubuntu
+
+  ApplicationStart:
+    - location: scripts/run_process.sh
+      timeout: 300
+      runas: ubuntu
