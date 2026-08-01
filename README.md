@@ -162,7 +162,7 @@ GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으�
 | Build    | Maven             |
 | Image    | Docker            |
 | Registry | Docker Hub        |
-| Package  | Amazon S3         |
+| Deployment Package  | Amazon S3         |
 | Deploy   | AWS CodeDeploy    |
 
 ---
