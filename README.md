@@ -153,29 +153,41 @@ AWS 인프라의 반복적인 구축 작업을 자동화하기 위해 Ansible Ro
 
 # 🔄 CI/CD Pipeline
 
-GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으로 실행되어 애플리케이션 빌드, Docker 이미지 생성, 배포 패키지 업로드, CodeDeploy 배포까지 자동으로 수행되도록 구성했습니다.
+GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으로 실행되어 애플리케이션 빌드, Docker 이미지 생성 및 Docker Hub Push, S3에 배포 패키지 업로드, CodeDeploy를 통한 배포까지 자동으로 수행되도록 구성했습니다.
 
-| 구분       | 구성                |
-| -------- | ----------------- |
-| Trigger  | GitHub Push       |
-| Source   | GitHub Repository |
-| Build    | Maven             |
-| Image    | Docker            |
-| Registry | Docker Hub        |
-| Deployment Package  | Amazon S3         |
-| Deploy   | AWS CodeDeploy    |
+| 구분 | 구성 |
+|---|---|
+| Trigger | GitHub Push |
+| Source | GitHub Repository |
+| Build | Maven |
+| Image Build | Docker |
+| Image Registry | Docker Hub |
+| Deployment Package Storage | Amazon S3 |
+| Deployment | AWS CodeDeploy |
 
-### Pipeline Flow
+### Deployment Package
 
-1. GitHub Repository 변경 사항 Push
-2. Jenkins Pipeline 실행
-3. Maven을 이용한 애플리케이션 빌드
-4. Docker 이미지 생성 및 Docker Hub Push
-5. 배포 패키지 생성 후 Amazon S3 업로드
-6. AWS CodeDeploy를 통한 Auto Scaling Group 배포
-7. EC2 인스턴스에서 최신 Docker 이미지 Pull 및 컨테이너 실행
+Jenkins는 `appspec.yml`과 `scripts/` 디렉터리를 `scripts.zip`으로 압축하여 Amazon S3에 업로드합니다.
 
-- [Jenkinsfile 보기](jenkins/Jenkinsfile)
+```text
+scripts.zip
+├── appspec.yml
+└── scripts/
+    ├── docker-compose.yml
+    ├── kill_process.sh
+    └── run_process.sh
+```
+
+CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인스턴스에 배포하고, `appspec.yml`에 정의된 Lifecycle Hook에 따라 배포 스크립트를 실행합니다.
+
+- `ApplicationStop`: 기존 Docker 컨테이너 종료
+- `ApplicationStart`: Docker Hub에서 최신 이미지를 Pull한 후 컨테이너 재생성
+
+### Source Code
+
+- [Jenkinsfile](jenkins/Jenkinsfile)
+- [appspec.yml](codedeploy/appspec.yml)
+- [Deployment Scripts](codedeploy/scripts)
 
 ---
 
