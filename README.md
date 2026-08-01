@@ -165,7 +165,7 @@ GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으�
 | Deployment Package Storage | Amazon S3 |
 | Deployment | AWS CodeDeploy |
 
-### Deployment Package
+## Deployment Package
 
 Jenkins는 `appspec.yml`과 `scripts/` 디렉터리를 `scripts.zip`으로 압축하여 Amazon S3에 업로드합니다.
 
@@ -183,7 +183,7 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 - `ApplicationStop`: 기존 Docker 컨테이너 종료
 - `ApplicationStart`: Docker Hub에서 최신 이미지를 Pull한 후 컨테이너 재생성
 
-### Source Code
+## Source Code
 
 - [Jenkinsfile](jenkins/Jenkinsfile)
 - [appspec.yml](codedeploy/appspec.yml)
