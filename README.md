@@ -153,6 +153,8 @@ AWS 인프라의 반복적인 구축 작업을 자동화하기 위해 Ansible Ro
 
 # 🔄 CI/CD Pipeline
 
+GitHub에 소스를 Push하면 Jenkins Pipeline이 실행되어 애플리케이션 빌드부터 Docker 이미지 생성, 배포 패키지 업로드, CodeDeploy 배포까지 자동으로 수행되도록 구성했습니다.
+
 ---
 
 # 📂 프로젝트 구조
