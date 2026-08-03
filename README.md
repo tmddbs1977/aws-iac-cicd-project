@@ -220,6 +220,7 @@ Jenkins Pipeline과 Docker Hub Push는 모두 성공했지만,
 ```bash
 docker compose pull
 docker compose up -d --force-recreate
+```
 
 ---
 
