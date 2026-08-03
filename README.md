@@ -183,7 +183,7 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 - `ApplicationStop`: 기존 Docker 컨테이너 종료
 - `ApplicationStart`: Docker Hub에서 최신 이미지를 Pull한 후 컨테이너 재생성
 
-## Source Code
+## Deployment Files
 
 - [Jenkinsfile](jenkins/Jenkinsfile)
 - [appspec.yml](codedeploy/appspec.yml)
@@ -200,6 +200,26 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 ---
 
 # ⚠ Trouble Shooting
+
+## Docker 컨테이너 최신 이미지가 반영되지 않는 문제
+
+### Problem
+
+Jenkins Pipeline과 Docker Hub Push는 모두 성공했지만,
+배포 후에도 EC2에서는 이전 버전의 애플리케이션이 실행되었습니다.
+
+### Cause
+
+- Docker Compose는 기존 로컬 이미지를 그대로 사용하고 있었습니다.
+- latest 태그만으로는 최신 이미지를 자동으로 Pull하지 않았습니다.
+
+### Solution
+
+배포 스크립트를 아래와 같이 수정했습니다.
+
+```bash
+docker compose pull
+docker compose up -d --force-recreate
 
 ---
 
