@@ -230,9 +230,9 @@ aws-iac-cicd-project/
 | **5**  | App Origin EC2 생성 후 Docker 및 CodeDeploy Agent 설치                                                       |
 | **6**  | App Origin 기반 AMI 생성 후 Launch Template 및 Auto Scaling Group 구성                                         |
 | **7**  | Application Load Balancer, Target Group, Listener Rule 구성                                              |
-| **8**  | S3 Bucket, CodeDeploy Application 및 Deployment Group 구성                                                |
-| **9**  | Route 53 도메인과 ALB 연동 및 Host Header 기반 라우팅 구성                                                           |
-| **10** | Jenkins Pipeline을 통해 GitHub Push → Maven Build → Docker Build & Push → S3 Upload → CodeDeploy 자동 배포 검증 |
+| **8**  | CodeDeploy 배포 환경(S3, Application, Deployment Group) 구성                                               |
+| **9**  | Route 53 도메인과 ALB 연동 및 Host Header 기반 라우팅 구성                                                       |
+| **10** | GitHub Push → Jenkins Pipeline → Maven Build → Docker Build & Push → S3 Upload → CodeDeploy → EC2 자동 배포 검증 |
 
 ---
 
