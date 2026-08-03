@@ -193,7 +193,7 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 
 # 📂 프로젝트 구조
 
-aws-iac-cicd-project/
+```aws-iac-cicd-project/
 ├── ansible/
 │   ├── group_vars/
 │   ├── playbooks/
@@ -206,6 +206,7 @@ aws-iac-cicd-project/
 ├── jenkins/
 │   └── Jenkinsfile
 └── README.md
+```
 
 | 경로 | 설명 |
 |---|---|
