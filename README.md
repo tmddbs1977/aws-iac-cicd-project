@@ -193,6 +193,28 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 
 # 📂 프로젝트 구조
 
+aws-iac-cicd-project/
+├── ansible/
+│   ├── group_vars/
+│   ├── playbooks/
+│   └── roles/
+├── codedeploy/
+│   ├── appspec.yml
+│   └── scripts/
+├── docs/
+│   └── architecture/
+├── jenkins/
+│   └── Jenkinsfile
+└── README.md
+
+| 경로 | 설명 |
+|---|---|
+| `ansible/` | Ansible을 이용한 AWS 인프라(IaC) 코드 |
+| `codedeploy/` | CodeDeploy 배포 패키지 및 배포 스크립트 |
+| `docs/architecture/` | AWS 인프라 및 CI/CD 아키텍처 다이어그램 |
+| `jenkins/` | Jenkins Pipeline(Jenkinsfile) |
+| `README.md` | 프로젝트 소개 및 구축 과정 문서 |
+
 ---
 
 # ⚙ 구축 과정
