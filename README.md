@@ -214,12 +214,25 @@ aws-iac-cicd-project/
 | `ansible/` | Ansible을 이용한 AWS 인프라(IaC) 코드 |
 | `codedeploy/` | CodeDeploy 배포 패키지 및 배포 스크립트 |
 | `docs/architecture/` | AWS 인프라 및 CI/CD 아키텍처 다이어그램 |
-| `jenkins/` | Jenkins Pipeline(Jenkinsfile) |
+| `jenkins/` | Jenkins Pipeline (Jenkinsfile) |
 | `README.md` | 프로젝트 소개 및 구축 과정 문서 |
 
 ---
 
 # ⚙ 구축 과정
+
+| 단계     | 구축 내용                                                                                                  |
+| ------ | ------------------------------------------------------------------------------------------------------ |
+| **1**  | Ansible 환경 구성 및 AWS Collection 설정                                                                      |
+| **2**  | VPC, Subnet, Internet Gateway, NAT Gateway, Route Table 구축                                             |
+| **3**  | Security Group 및 IAM Role / Instance Profile 구성                                                        |
+| **4**  | Private Subnet에 Jenkins EC2 생성 및 Jenkins 환경 구성                                                         |
+| **5**  | App Origin EC2 생성 후 Docker 및 CodeDeploy Agent 설치                                                       |
+| **6**  | App Origin 기반 AMI 생성 후 Launch Template 및 Auto Scaling Group 구성                                         |
+| **7**  | Application Load Balancer, Target Group, Listener Rule 구성                                              |
+| **8**  | S3 Bucket, CodeDeploy Application 및 Deployment Group 구성                                                |
+| **9**  | Route 53 도메인과 ALB 연동 및 Host Header 기반 라우팅 구성                                                           |
+| **10** | Jenkins Pipeline을 통해 GitHub Push → Maven Build → Docker Build & Push → S3 Upload → CodeDeploy 자동 배포 검증 |
 
 ---
 
