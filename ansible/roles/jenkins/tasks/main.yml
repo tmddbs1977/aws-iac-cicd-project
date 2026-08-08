@@ -31,7 +31,6 @@
         groups: "{{ sg_info.security_groups | map(attribute='group_id') | list }}"
         assign_public_ip: false
     iam_instance_profile: "{{ prefix }}-app-instance-profile"
-    # 요구사항: Jenkins 배포 스크립트 실행
     user_data: |
       #!/bin/bash
       apt-get update -y
