@@ -5,7 +5,7 @@
     name: "{{ prefix }}-codedeploy-bucket"
     region: "{{ region }}"
     state: present
-    public_access:  # 보안을 위해 퍼블릭 액세스는 차단하는 것이 정석입니다.
+    public_access:  # 실제 운용 환경에서는 보안을 위해 퍼블릭 액세스를 차단
       block_public_acls: true
       block_public_policy: true
       ignore_public_acls: true
