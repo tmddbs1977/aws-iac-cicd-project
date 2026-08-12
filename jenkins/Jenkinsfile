@@ -61,7 +61,7 @@ pipeline {
       }
     }
 
-    // CodeDeploy 애플리케이션은 미리생성.
+    // CodeDeploy 애플리케이션은 미리생성
     stage('Codedeploy workload') {
       steps {
           echo "Update/Create code-deploy group"
