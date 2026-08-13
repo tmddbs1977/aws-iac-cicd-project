@@ -202,6 +202,8 @@ aws-iac-cicd-project/
 │   ├── group_vars/
 │   ├── playbooks/
 │   └── roles/
+├── app/
+│   └── Dockerfile
 ├── codedeploy/
 │   ├── appspec.yml
 │   └── scripts/
@@ -215,6 +217,7 @@ aws-iac-cicd-project/
 | 경로 | 설명 |
 |---|---|
 | `ansible/` | Ansible을 이용한 AWS 인프라(IaC) 코드 |
+| `app/` | Spring PetClinic Docker 이미지 빌드에 사용한 Dockerfile |
 | `codedeploy/` | CodeDeploy 배포 패키지 및 배포 스크립트 |
 | `docs/architecture/` | AWS 인프라 및 CI/CD 아키텍처 다이어그램 |
 | `jenkins/` | Jenkins Pipeline (Jenkinsfile) |
@@ -233,9 +236,9 @@ aws-iac-cicd-project/
 | **5**  | App Origin EC2 생성 후 Docker 및 CodeDeploy Agent 설치                                                       |
 | **6**  | App Origin 기반 AMI 생성 후 Launch Template 및 Auto Scaling Group 구성                                         |
 | **7**  | Application Load Balancer, Target Group, Listener Rule 구성                                              |
-| **8**  | CodeDeploy 배포 환경(S3, Application, Deployment Group) 구성                                               |
+| **8**  | S3 Bucket 및 CodeDeploy Application 구성                                           |
 | **9**  | Route 53 도메인과 ALB 연동 및 Host Header 기반 라우팅 구성                                                       |
-| **10** | GitHub Push → Jenkins Pipeline → Maven Build → Docker Build & Push → S3 Upload → CodeDeploy → EC2 자동 배포 검증 |
+| **10** | GitHub Push → Jenkins Pipeline → Build → Docker Hub Push → S3 Upload → Deployment Group 생성/업데이트 → CodeDeploy 배포 검증 |
 
 ---
 
