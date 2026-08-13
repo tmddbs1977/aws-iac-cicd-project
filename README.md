@@ -237,9 +237,9 @@ aws-iac-cicd-project/
 | **4**  | Private Subnet에 Jenkins EC2 생성 및 Jenkins 환경 구성                                                         |
 | **5**  | App Origin EC2 생성 후 Docker 및 CodeDeploy Agent 설치                                                       |
 | **6**  | App Origin 기반 AMI 생성 후 Launch Template 및 Auto Scaling Group 구성                                         |
-| **7**  | Application Load Balancer, Target Group, Listener Rule 구성                                              |
+| **7**  | ALB, Target Group, Listener Rule 구성 및 ASG와 App Target Group 연결                                           |
 | **8**  | S3 Bucket 및 CodeDeploy Application 구성                                           |
-| **9**  | Route 53 도메인과 ALB 연동 및 Host Header 기반 라우팅 구성                                                       |
+| **9**  | Route 53 도메인 수동 구성 및 ALB Host Header 기반 라우팅 적용                                                   |
 | **10** | GitHub Push → Jenkins Pipeline → Build → Docker Hub Push → S3 Upload → Deployment Group 생성/업데이트 → CodeDeploy 배포 실행 |
 
 ---
