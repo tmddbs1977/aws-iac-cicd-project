@@ -196,6 +196,8 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 
 # 📂 프로젝트 구조
 
+※ 실제 CI/CD 프로젝트에서 사용한 app및 배포 패키지 등을 포트폴리오에서 확인할 수 있도록 디렉터리에 별도로 정리했습니다.
+
 ```text
 aws-iac-cicd-project/
 ├── ansible/
