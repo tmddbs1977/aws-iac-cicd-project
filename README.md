@@ -158,7 +158,7 @@ GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으�
 | 구분 | 구성 |
 |---|---|
 | Trigger | GitHub Push |
-| Source | GitHub Repository (Spring PetClinic 오픈소스를 사용) |
+| Source | GitHub Repository (Spring PetClinic 오픈소스를 복사해서 사용) |
 | Build | Maven |
 | Image Build | Docker |
 | Image Registry | Docker Hub |
