@@ -229,7 +229,7 @@ aws-iac-cicd-project/
 
 # ⚙ 구축 과정
 
-| 단계     | 구축 내용                                                                                                  |
+| 단계 | 구축 내용                                                                                                  |
 | ------ | ------------------------------------------------------------------------------------------------------ |
 | **1**  | Ansible 환경 구성 및 AWS Collection 설정                                                                      |
 | **2**  | VPC, Subnet, Internet Gateway, NAT Gateway, Route Table 구축                                             |
@@ -240,7 +240,7 @@ aws-iac-cicd-project/
 | **7**  | ALB, Target Group, Listener Rule 구성 및 ASG와 App Target Group 연결                                           |
 | **8**  | S3 Bucket 및 CodeDeploy Application 구성                                           |
 | **9**  | Route 53 도메인 수동 구성 및 ALB Host Header 기반 라우팅 적용                                                   |
-| **10** | GitHub Push → Jenkins Pipeline → Build → Docker Hub Push → S3 Upload → Deployment Group 생성/업데이트 → CodeDeploy 배포 실행 |
+| **10** | GitHub Push → Jenkins Build → Docker Hub / S3 Upload → CodeDeploy 배포 |
 
 ---
 
