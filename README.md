@@ -158,7 +158,7 @@ GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으�
 | 구분 | 구성 |
 |---|---|
 | Trigger | GitHub Push |
-| Source | GitHub Repository (Spring PetClinic 오픈소스를 복사해서 사용) |
+| Source | GitHub Repository (Spring PetClinic 오픈소스 기반) |
 | Build | Maven |
 | Image Build | Docker |
 | Image Registry | Docker Hub |
@@ -196,7 +196,7 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 
 # 📂 프로젝트 구조
 
-※ 실제 CI/CD 프로젝트에서 사용한 app및 배포 패키지 등을 포트폴리오에서 확인할 수 있도록 디렉터리에 별도로 정리했습니다.
+※ 실제 CI/CD 프로젝트에서 사용한 Dockerfile 및 배포 파일을 포트폴리오에서 확인할 수 있도록 별도 디렉터리에 정리했습니다.
 
 ```text
 aws-iac-cicd-project/
@@ -240,7 +240,7 @@ aws-iac-cicd-project/
 | **7**  | Application Load Balancer, Target Group, Listener Rule 구성                                              |
 | **8**  | S3 Bucket 및 CodeDeploy Application 구성                                           |
 | **9**  | Route 53 도메인과 ALB 연동 및 Host Header 기반 라우팅 구성                                                       |
-| **10** | GitHub Push → Jenkins Pipeline → Build → Docker Hub Push → S3 Upload → Deployment Group 생성/업데이트 → CodeDeploy 배포 검증 |
+| **10** | GitHub Push → Jenkins Pipeline → Build → Docker Hub Push → S3 Upload → Deployment Group 생성/업데이트 → CodeDeploy 배포 실행 |
 
 ---
 
