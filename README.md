@@ -151,7 +151,7 @@ AWS 인프라의 반복적인 구축 작업을 자동화하기 위해 Ansible Ro
 
 ---
 
-# 🔄 CI/CD Pipeline
+# 🔄 CI/CD 구성
 
 GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으로 실행되어 애플리케이션 빌드, Docker 이미지 생성 및 Docker Hub Push, S3에 배포 패키지 업로드, CodeDeploy를 통한 배포까지 자동으로 수행되도록 구성했습니다.
 
@@ -238,7 +238,8 @@ aws-iac-cicd-project/
 │   ├── appspec.yml
 │   └── scripts/
 ├── docs/
-│   └── architecture/
+│   ├── architecture/
+│   └── screenshots/
 ├── jenkins/
 │   └── Jenkinsfile
 └── README.md
@@ -250,6 +251,7 @@ aws-iac-cicd-project/
 | `app/` | Spring PetClinic Docker 이미지 빌드에 사용한 Dockerfile |
 | `codedeploy/` | CodeDeploy 배포 패키지 및 배포 스크립트 |
 | `docs/architecture/` | AWS 인프라 및 CI/CD 아키텍처 다이어그램 |
+| `docs/screenshots/` | CI/CD 실행 결과 이미지 |
 | `jenkins/` | Jenkins Pipeline (Jenkinsfile) |
 | `README.md` | 프로젝트 소개 및 구축 과정 문서 |
 
