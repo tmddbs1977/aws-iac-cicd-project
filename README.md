@@ -194,6 +194,34 @@ CodeDeploy는 S3에 저장된 배포 패키지를 Auto Scaling Group의 EC2 인�
 
 ---
 
+# 📸 CI/CD 실행 결과
+
+### 1. GitHub 소스 변경
+
+![GitHub Source Change](docs/screenshots/cicd/01_github_source_change.png)
+
+GitHub에서 애플리케이션 소스를 수정하여 CI/CD Pipeline 실행을 위한 변경 사항을 반영했습니다.
+
+### 2. Jenkins Pipeline 실행
+
+![Jenkins Pipeline Success](docs/screenshots/cicd/02_jenkins_pipeline_success.png)
+
+Jenkins Pipeline을 통해 Maven Build, Docker Image Build/Push, S3 배포 패키지 업로드 및 CodeDeploy 배포 요청이 정상적으로 수행되었습니다.
+
+### 3. CodeDeploy 배포
+
+![CodeDeploy Success](docs/screenshots/cicd/03_codedeploy_success.png)
+
+CodeDeploy를 통해 Auto Scaling Group의 APP 인스턴스 2대에 배포가 정상적으로 완료된 것을 확인했습니다.
+
+### 4. 애플리케이션 변경 사항 반영 확인
+
+![Application Deployment Result](docs/screenshots/cicd/04_app_deploy_result.png)
+
+배포 완료 후 실제 서비스에 접속하여 GitHub에서 수정한 내용이 정상적으로 반영된 것을 확인했습니다.
+
+---
+
 # 📂 프로젝트 구조
 
 ※ 실제 CI/CD 프로젝트에서 사용한 Dockerfile 및 배포 파일을 포트폴리오에서 확인할 수 있도록 별도 디렉터리에 정리했습니다.
