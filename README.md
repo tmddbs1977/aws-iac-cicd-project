@@ -73,6 +73,7 @@ Jenkins 및 WAS 인스턴스를 Private Subnet에 배치하여 외부에 직접 
 
 | 구분 | 구성 |
 |---|---|
+| Ansible Control Node | Public Subnet A, Ansible Playbook 실행용 |
 | Jenkins | Private Subnet A, 172.42.64.100 |
 | App Origin | Public Subnet A에서 임시 생성 후 AMI 생성 및 종료 |
 | WAS | Private Subnet A/C, Auto Scaling Group으로 관리 |
@@ -81,6 +82,8 @@ Jenkins 및 WAS 인스턴스를 Private Subnet에 배치하여 외부에 직접 
 | Launch Template | App Origin 기반 AMI 사용 |
 | Auto Scaling | Min 1 / Desired 2 / Max 3 |
 | Health Check | ELB |
+
+Ansible Control Node는 Public Subnet A에 배치하고, 해당 서버에서 AWS 인프라 구축 Playbook을 실행했습니다.
 
 Jenkins 서버는 Private Subnet A에 고정 사설 IP로 배치하고 Public IP를 할당하지 않았습니다.
 
@@ -93,7 +96,6 @@ WAS는 Docker와 CodeDeploy Agent가 설치된 App Origin 인스턴스로부터 
 |---|---|---|
 | SSH SG | TCP 22 | 0.0.0.0/0 |
 | Web SG | TCP 80, 443 | 0.0.0.0/0 |
-| SSM Endpoint SG | TCP 443 | 172.42.0.0/16 |
 
 ※ 실습 환경에서는 SSH 접근을 위해 22번 포트를 전체 대역에 허용했으며, 운영 환경에서는 관리자 IP 대역으로 제한하는 것이 적절합니다.
 
@@ -165,7 +167,7 @@ GitHub Repository에 변경 사항을 Push하면 Jenkins Pipeline이 자동으�
 | Deployment Package Storage | Amazon S3 |
 | Deployment | AWS CodeDeploy |
 
-※Application Source
+※ Application Source
 https://github.com/tmddbs1977/spring-petclinic
 
 ## Deployment Package
@@ -274,7 +276,7 @@ aws-iac-cicd-project/
 
 ---
 
-# ⚠ Trouble Shooting
+# ⚠ TroubleShooting
 
 ## 1. IAM Role 및 Instance Profile 권한 설정 문제
 
