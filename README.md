@@ -276,40 +276,49 @@ aws-iac-cicd-project/
 
 ---
 
-# ⚠ TroubleShooting
+# ⚠ Troubleshooting
 
-## 1. IAM Role 및 Instance Profile 권한 설정 문제
-
-**문제**
-- Jenkins에서 CodeDeploy 배포 환경을 구성하고 EC2에서 배포를 수행하는 과정에서 IAM Role 및 권한 설정과 관련된 오류가 발생했습니다.
-
-**원인**
-- EC2 인스턴스에서 AWS 서비스에 접근하기 위한 IAM Role과 Instance Profile 설정이 필요했습니다.
-- Jenkins에서 CodeDeploy Deployment Group에 Service Role을 지정하기 위해 해당 Role에 대한 `iam:PassRole` 권한이 필요했습니다.
-
-**해결**
-- EC2와 CodeDeploy가 각각 필요한 IAM Role을 수임할 수 있도록 Trust Policy(`sts:AssumeRole`)를 구성했습니다.
-- APP EC2용 IAM Role을 Instance Profile과 연결하여 EC2 인스턴스에 적용했습니다.
-- Jenkins에서 CodeDeploy Service Role을 전달할 수 있도록 `iam:PassRole` 정책을 추가했습니다.
-
-**결과**
-- IAM Role, Trust Policy, Instance Profile 및 PassRole의 역할과 차이를 이해하고, CodeDeploy와 EC2가 필요한 권한을 사용할 수 있도록 IAM 구성을 정리했습니다.
-
-## 2. Docker 컨테이너 최신 이미지 미반영 문제
+## 1. CodeDeploy 배포 그룹 생성 시 iam:PassRole 권한 부족 문제
 
 **문제**
-- GitHub 코드 수정 후 Jenkins Build와 Docker Hub Push는 정상적으로 완료되었지만, 배포 후 EC2에서는 이전 버전의 애플리케이션이 계속 실행되는 문제가 발생했습니다.
 
-**원인**
-- 새로운 이미지가 Docker Hub에 Push되었지만 배포 과정에서 최신 이미지를 명시적으로 Pull하지 않아 EC2에 존재하는 기존 로컬 이미지를 사용하고 있었습니다.
-- `latest` 태그를 사용하더라도 실행 시점에 항상 최신 이미지를 자동으로 가져오는 것은 아니었습니다.
+- Jenkins에서 CodeDeploy 배포 그룹을 생성하는 과정에서 `iam:PassRole` 권한 부족 오류가 발생했습니다.
+
+**원인 분석**
+
+- 오류 메시지를 확인한 결과, Jenkins가 사용하는 IAM Role에 CodeDeploy Service Role을 전달할 수 있는 `iam:PassRole` 권한이 부족했습니다.
 
 **해결**
-- 배포 스크립트에 `docker compose pull`을 추가하여 배포 시 Docker Hub에서 최신 이미지를 가져오도록 수정했습니다.
-- 이후 `docker compose up -d --force-recreate`를 실행하여 새로운 이미지를 기반으로 컨테이너를 재생성하도록 구성했습니다.
+
+- Jenkins가 사용하는 IAM Role에 `iam:PassRole` 인라인 정책을 추가하고, 전달 대상은 CodeDeploy Service Role의 ARN으로 지정했습니다.
+- 해당 설정을 Ansible 코드에 반영하여 인프라 재구축 시에도 동일하게 적용되도록 구성했습니다.
 
 **결과**
-- Docker 이미지 태그와 Pull 동작의 관계를 이해하고, CI/CD 배포 과정에서 최신 이미지를 명시적으로 반영하도록 배포 스크립트를 개선했습니다.
+
+- 권한 추가 후 CodeDeploy 배포 그룹 생성 단계가 정상적으로 진행되었습니다.
+- AWS 서비스에 접근하는 권한과 다른 서비스에 역할을 전달하는 권한의 차이를 이해하고, 오류 메시지를 바탕으로 필요한 권한을 확인하는 경험을 쌓았습니다.
+
+## 2. 배포 성공 후 애플리케이션 변경 사항 미반영 문제
+
+**문제**
+
+- GitHub에서 코드를 수정한 후 Jenkins 빌드와 CodeDeploy 배포가 성공으로 표시됐지만, 실제 웹 화면에는 수정 전 내용이 남아 있었습니다.
+
+**원인 분석**
+
+- ASG 인스턴스가 `InService` 상태이며, CodeDeploy 배포 대상 인스턴스 2대 모두 성공으로 표시되는 것을 확인했습니다.
+- S3 배포 파일의 최종 수정 시각과 Jenkins 업로드 로그를 점검하여 배포 패키지가 정상적으로 갱신된 것을 확인했습니다.
+- Docker Hub에 새 이미지가 업로드된 것을 확인하고 배포 서버의 이미지 갱신 과정을 점검했습니다. 배포 과정에서 새 이미지를 Pull하지 않아 기존 로컬 이미지가 사용되고 있었습니다.
+
+**해결**
+
+- 배포 스크립트에 `docker compose pull`을 추가하여 컨테이너 실행 전에 Docker Hub의 이미지를 가져오도록 수정했습니다.
+- 이후 `docker compose up -d --force-recreate`를 실행하여 가져온 이미지를 기반으로 컨테이너를 재생성하도록 구성했습니다.
+
+**결과**
+
+- 재배포 후 실제 웹 화면에서 코드 수정사항이 정상적으로 반영되는 것을 확인했습니다.
+- 빌드·배포 도구의 성공 표시뿐 아니라, 배포 서버의 이미지 갱신 여부와 실제 애플리케이션 동작까지 확인하는 중요성을 배웠습니다.
 
 ---
 
